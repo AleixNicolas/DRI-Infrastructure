@@ -1,0 +1,534 @@
+{
+    "Valencia": {
+        "affected": [
+            "Alaquàs",
+            "Albal",
+            "Albalat de la Ribera",
+            "Alberic",
+            "Alborache",
+            "Alcàsser",
+            "l'Alcúdia",
+            "Aldaia",
+            "Alfafar",
+            "Alfarb",
+            "Algemesí",
+            "Alginet",
+            "Almussafes",
+            "Alzira",
+            "Aras de los Olmos",
+            "Barxeta",
+            "Benagéber",
+            "Benaguasil",
+            "Benetússer",
+            "Benicull de Xúquer",
+            "Benifaió",
+            "Benimuslem",
+            "Beniparrell",
+            "Benimodo",
+            "Bétera",
+            "Bugarra",
+            "Buñol",
+            "Calles",
+            "Camporrobles",
+            "Carcaixent",
+            "Carlet",
+            "Casinos",
+            "Castelló de la Ribera",
+            "Castielfabib",
+            "Catadau",
+            "Catarroja",
+            "Caudete de las Fuentes",
+            "Chelva",
+            "Chera",
+            "Cheste",
+            "Chiva",
+            "Chulilla",
+            "Corbera",
+            "Cullera",
+            "Dos Aguas",
+            "Favara",
+            "Fortaleny",
+            "Fuenterrobles",
+            "Gavarda",
+            "Gestalgar",
+            "Godelleta",
+            "Guadassuar",
+            "l'Ènova",
+            "Llaurí",
+            "Llombai",
+            "Llíria",
+            "Llocnou de la Corona",
+            "Loriguilla",
+            "Losa del Obispo",
+            "Macastre",
+            "Manises",
+            "Manuel",
+            "Massalavés",
+            "Massanassa",
+            "Millares",
+            "Mislata",
+            "Montroi",
+            "Montserrat",
+            "Paiporta",
+            "Paterna",
+            "Pedralba",
+            "Picanya",
+            "Picassent",
+            "Polinyà de Xúquer",
+            "La Pobla Llarga",
+            "Quart de Poblet",
+            "Rafelguaraf",
+            "Real",
+            "Requena",
+            "Riba-roja de Túria",
+            "Riola",
+            "Sant Joanet",
+            "Sedaví",
+            "Senyera",
+            "Siete Aguas",
+            "Silla",
+            "Sinarcas",
+            "Sollana",
+            "Sot de Chera",
+            "Sueca",
+            "Tavernes de la Valldigna",
+            "Titaguas",
+            "Torrent",
+            "Tous",
+            "Tuéjar",
+            "Turís",
+            "Utiel",
+            "València",
+            "Vilamarxant",
+            "Villar del Arzobispo",
+            "Xeraco",
+            "Xirivella",
+            "Yátova"
+        ],
+        "coordinates": {
+            "Alaquàs": [
+                39.457119,
+                -0.460822
+            ],
+            "Albal": [
+                39.397347,
+                -0.413243
+            ],
+            "Albalat de la Ribera": [
+                39.201133,
+                -0.386659
+            ],
+            "Alberic": [
+                39.116783,
+                -0.517571
+            ],
+            "Alborache": [
+                39.391716,
+                -0.771191
+            ],
+            "Alcàsser": [
+                39.36981,
+                -0.445176
+            ],
+            "l'Alcúdia": [
+                39.194077,
+                -0.507206
+            ],
+            "Aldaia": [
+                39.464957,
+                -0.460764
+            ],
+            "Alfafar": [
+                39.422773,
+                -0.390834
+            ],
+            "Alfarb": [
+                39.276849,
+                -0.560529
+            ],
+            "Algemesí": [
+                39.188743,
+                -0.436927
+            ],
+            "Alginet": [
+                39.261819,
+                -0.469791
+            ],
+            "Almussafes": [
+                39.292656,
+                -0.41326
+            ],
+            "Alzira": [
+                39.152038,
+                -0.441074
+            ],
+            "Aras de los Olmos": [
+                39.924534,
+                -1.132748
+            ],
+            "Barxeta": [
+                39.022865,
+                -0.416099
+            ],
+            "Benagéber": [
+                39.707324,
+                -1.100825
+            ],
+            "Benaguasil": [
+                39.593635,
+                -0.585004
+            ],
+            "Benetússer": [
+                39.423801,
+                -0.397785
+            ],
+            "Benicull de Xúquer": [
+                39.185063,
+                -0.382524
+            ],
+            "Benifaió": [
+                39.285003,
+                -0.426889
+            ],
+            "Benimuslem": [
+                39.131337,
+                -0.49275
+            ],
+            "Beniparrell": [
+                39.382235,
+                -0.412277
+            ],
+            "Benimodo": [
+                39.213015,
+                -0.528357
+            ],
+            "Bétera": [
+                39.591643,
+                -0.462355
+            ],
+            "Bugarra": [
+                39.608415,
+                -0.775958
+            ],
+            "Buñol": [
+                39.418217,
+                -0.790672
+            ],
+            "Calles": [
+                39.725371,
+                -0.973952
+            ],
+            "Camporrobles": [
+                39.647167,
+                -1.399476
+            ],
+            "Carcaixent": [
+                39.1226,
+                -0.450718
+            ],
+            "Carlet": [
+                39.225881,
+                -0.519809
+            ],
+            "Casinos": [
+                39.701574,
+                -0.709655
+            ],
+            "Castelló de la Ribera": [
+                39.079664,
+                -0.514174
+            ],
+            "Castielfabib": [
+                40.131018,
+                -1.303874
+            ],
+            "Catadau": [
+                39.275363,
+                -0.56974
+            ],
+            "Catarroja": [
+                39.403048,
+                -0.404021
+            ],
+            "Caudete de las Fuentes": [
+                39.558958,
+                -1.278492
+            ],
+            "Chelva": [
+                39.747097,
+                -0.997692
+            ],
+            "Chera": [
+                39.593442,
+                -0.973241
+            ],
+            "Cheste": [
+                39.494909,
+                -0.684261
+            ],
+            "Chiva": [
+                39.471469,
+                -0.7171
+            ],
+            "Chulilla": [
+                39.656217,
+                -0.891905
+            ],
+            "Corbera": [
+                39.158264,
+                -0.355378
+            ],
+            "Cullera": [
+                39.16525,
+                -0.253612
+            ],
+            "Dos Aguas": [
+                39.288825,
+                -0.800238
+            ],
+            "Favara": [
+                39.127275,
+                -0.291808
+            ],
+            "Fortaleny": [
+                39.183833,
+                -0.313715
+            ],
+            "Fuenterrobles": [
+                39.584682,
+                -1.364031
+            ],
+            "Gavarda": [
+                39.090082,
+                -0.545045
+            ],
+            "Gestalgar": [
+                39.604207,
+                -0.834346
+            ],
+            "Godelleta": [
+                39.42204,
+                -0.686434
+            ],
+            "Guadassuar": [
+                39.185852,
+                -0.478023
+            ],
+            "l'Ènova": [
+                39.045134,
+                -0.48079
+            ],
+            "Llaurí": [
+                39.147102,
+                -0.330235
+            ],
+            "Llombai": [
+                39.282414,
+                -0.572366
+            ],
+            "Llíria": [
+                39.624719,
+                -0.595006
+            ],
+            "Llocnou de la Corona": [
+                39.420446,
+                -0.382216
+            ],
+            "Loriguilla": [
+                39.489698,
+                -0.571964
+            ],
+            "Losa del Obispo": [
+                39.695444,
+                -0.87196
+            ],
+            "Macastre": [
+                39.381938,
+                -0.785287
+            ],
+            "Manises": [
+                39.493345,
+                -0.457466
+            ],
+            "Manuel": [
+                39.05276,
+                -0.494055
+            ],
+            "Massalavés": [
+                39.140675,
+                -0.521159
+            ],
+            "Massanassa": [
+                39.41146,
+                -0.397986
+            ],
+            "Millares": [
+                39.238985,
+                -0.773203
+            ],
+            "Mislata": [
+                39.475218,
+                -0.417833
+            ],
+            "Montroi": [
+                39.341742,
+                -0.613689
+            ],
+            "Montserrat": [
+                39.358012,
+                -0.603212
+            ],
+            "Paiporta": [
+                39.429588,
+                -0.417467
+            ],
+            "Paterna": [
+                39.500663,
+                -0.439682
+            ],
+            "Pedralba": [
+                39.604864,
+                -0.726535
+            ],
+            "Picanya": [
+                39.435146,
+                -0.43349
+            ],
+            "Picassent": [
+                39.362746,
+                -0.458078
+            ],
+            "Polinyà de Xúquer": [
+                39.19615,
+                -0.369461
+            ],
+            "La Pobla Llarga": [
+                39.085916,
+                -0.475557
+            ],
+            "Quart de Poblet": [
+                39.483003,
+                -0.442288
+            ],
+            "Rafelguaraf": [
+                39.050797,
+                -0.455126
+            ],
+            "Real": [
+                39.335088,
+                -0.609125
+            ],
+            "Requena": [
+                39.487037,
+                -1.098087
+            ],
+            "Riba-roja de Túria": [
+                39.546926,
+                -0.566891
+            ],
+            "Riola": [
+                39.195261,
+                -0.334682
+            ],
+            "Sant Joanet": [
+                39.072333,
+                -0.486829
+            ],
+            "Sedaví": [
+                39.425005,
+                -0.385783
+            ],
+            "Senyera": [
+                39.063613,
+                -0.510467
+            ],
+            "Siete Aguas": [
+                39.471633,
+                -0.915872
+            ],
+            "Silla": [
+                39.362679,
+                -0.412147
+            ],
+            "Sinarcas": [
+                39.733258,
+                -1.229035
+            ],
+            "Sollana": [
+                39.278009,
+                -0.381457
+            ],
+            "Sot de Chera": [
+                39.620816,
+                -0.909344
+            ],
+            "Sueca": [
+                39.20264,
+                -0.310637
+            ],
+            "Tavernes de la Valldigna": [
+                39.071834,
+                -0.26774
+            ],
+            "Titaguas": [
+                39.865889,
+                -1.080723
+            ],
+            "Torrent": [
+                39.436931,
+                -0.465889
+            ],
+            "Tous": [
+                39.138561,
+                -0.586636
+            ],
+            "Tuéjar": [
+                39.763485,
+                -1.039679
+            ],
+            "Turís": [
+                39.389834,
+                -0.711107
+            ],
+            "Utiel": [
+                39.566851,
+                -1.206009
+            ],
+            "València": [
+                39.469844,
+                -0.376852
+            ],
+            "Vilamarxant": [
+                39.567855,
+                -0.622488
+            ],
+            "Villar del Arzobispo": [
+                39.730829,
+                -0.82524
+            ],
+            "Xeraco": [
+                39.033395,
+                -0.215323
+            ],
+            "Xirivella": [
+                39.46336,
+                -0.428399
+            ],
+            "Yátova": [
+                39.385085,
+                -0.808117
+            ]
+        }
+    },
+    "Cuenca": {
+        "affected": [
+            "Mira"
+        ],
+        "coordinates": {
+            "Mira": [
+                39.720949,
+                -1.439225
+            ]
+        }
+    }
+}

@@ -1,0 +1,16 @@
+# Ignore everything inside folderB but keep the folder
+results/*
+processed_files/*
+
+# Keep the folders themselves (placeholder files)
+!results/.gitkeep
+!processed_files/.gitkeep
+
+# Ignore everything inside folderC except specific files
+source_files/*
+!source_files/affected_municipalities_dictionary.json
+!source_files/Source_files.docx
+
+# Optional: ensure the folder itself is tracked
+!source_files/.gitkeep
+

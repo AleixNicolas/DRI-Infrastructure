@@ -1,0 +1,27 @@
+name: DRI
+channels:
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - branca
+  - fiona
+  - folium
+  - gdal
+  - geopandas
+  - igraph
+  - jupyterlab
+  - libspatialindex
+  - matplotlib
+  - networkx
+  - osmnx=1.8.1
+  - pandas
+  - pip
+  - pyproj
+  - python=3.11
+  - rtree
+  - shapely
+  - python-igraph
+  - seaborn
+  - contextily
+  - adjusttext
+prefix: /Users/aleix/anaconda3/envs/DRI

@@ -1,0 +1,162 @@
+Make sure source_files contains all necessary files.
+
+Computation and creation of processed_files
+
+The codes are to be executed in the following order unless required processed files are already in processed_files folder.
+If any of the generated files already exist they will just be uploaded not created anew.
+
+1. StreetData.py:
+
+    Notes:
+    This code generates areas and complete networks from osmnx and includes municipalities and services.
+
+    Requires:
+        source_files:
+            - "puntos riesgo ambientales"
+        processed_files:
+
+    Generates
+        processed_files:
+            - affected_area.gpkg: area of affected municipalities
+            - neighbors_1_area.gpkg: idem including first neighbors
+            - neighbors_2_area.gpkg: idem including second neighbors
+            - points_in_polygon.gpkg: all points of interest in the area including type, subtype and geometry
+            - G_affected.graphml: Road graph including node for municipality, type and subtype of interest points of the affected area
+            - G_1st.graphml: idem including first neighbors
+            - G_2nd.graphml: idem including second neighbors
+
+    Pending improvements:
+        - Include new interest points input data.
+        - Comment.
+        - Pass regions from file/call, tricky as sometimes the affected area may include different regions and names have to be checked.
+
+2. FloodZones.py
+
+    Notes:
+        This code generates flooded areas in differnt scenarios including flood depth as well as the graphs of cut and safe road (according to flooded area) and the shortest paths between municipalities.
+        NP stands for Non Perturbed, base state of the system.
+
+    Requires:
+        source_files:
+            - laminaspb-q10: Data on 10yr risk scenario
+            - laminaspb-q100: Idem 100 yr
+            - laminaspb-q500: Idem 500 yr
+            - EMSR773_AOI01_DEL_PRODUCT_v1: flood data 31/10/2024
+            - EMSR773_AOI01_DEL_MONIT01_v1: idem 03/11/2024
+            - EMSR773_AOI01_DEL_MONIT02_v1: idem 05/11/2024
+            - EMSR773_AOI01_DEL_MONIT03_v1: idem 06/11/2024
+            - EMSR773_AOI01_DEL_MONIT04_v1: idem 08/11/2024
+        processed_files:
+            - neighbors_2_area.gpkg
+            - G_2nd.graphml
+
+    Generates:
+        processed_files:
+            - zone_flood_*.gpkg: flooded area for given scenario
+            - depth_*.gpkg: depth of flood areas for given scenario
+            - cut_roads_*.graphml: graph of cut roads for given scenario
+            - cut_roads_*.gpkg: geopackage of cut roads for given scenario
+            - safe_roads_*.graphml: graph of safe roads for given scenario
+            - safe_roads_*.gpkg: geopackage of safe roads for given scenario
+            - shorthest_paths_*.json: list of shortest paths and total time between all municipalities for a given scenario
+        
+    Pending improvements:
+        - Revise and Comment.
+        - Add import layers input and output file names from file.
+        - Check for further separation, potentially: zones+depth, roads, shortest_paths
+
+3. NavigabilityAnalysis.py
+
+    Notes:
+        Computes effect on global risk of removing/adding edges
+
+    Requires:
+        processed_files:
+            - G_2nd.graphml
+            - cut_roads_flood_risk_10.graphml
+            - cut_roads_flood_risk_100.graphml
+            - cut_roads_flood_risk_500.graphml
+            - cut_roads_DANA_31_10_2024.graphml
+            - cut_roads_DANA_03_11_2024.graphml
+            - cut_roads_DANA_05_11_2024.graphml
+            - cut_roads_DANA_06_11_2024.graphml
+            - cut_roads_DANA_08_11_2024.graphml
+            - safe_roads_flood_risk_10.graphml
+            - safe_roads_flood_risk_100.graphml
+            - safe_roads_flood_risk_500.graphml
+            - safe_roads_DANA_31_10_2024.graphml
+            - safe_roads_DANA_03_11_2024.graphml
+            - safe_roads_DANA_05_11_2024.graphml
+            - safe_roads_DANA_06_11_2024.graphml
+            - safe_roads_DANA_08_11_2024.graphml
+
+    Generates
+        processed_files:
+            - edge_risks_NP.json: effect on global risk of removing each edge from the non perturbed network
+            - edge_risks_DANA.json: effect on global risk of recovering each edge at the peak of the DANA flood
+            - R_G.json: global risk values for different scenarios
+
+    Pending improvements:
+        - Revise and Comment.
+        - Add import layers input and output file names from file.
+
+4. ServicesAcces.py
+    Pending improvements:
+        - Revise after StreetData.py includes all interest points
+    
+Plots
+
+No order required as long as processed_files already exist
+
+1. PlotGloRiskBar.py:
+
+    Notes: 
+        Generates bar plots with global risks in different scenarios
+
+    Requires:
+        processed_files:
+            - R_G.json
+
+    Pending improvments:
+        - Get scenarios from file or call
+
+2. PlotKDEReach.py
+
+    Notes: 
+        Generates KDE of travel times + bar plots with reacheable fraction in different scenarios
+
+    Requires:
+        processed_files:
+            - shortest_paths_NP.json
+            - shortest_paths_*.json (required scenarios)
+
+    Pending improvments:
+        - Get scenarios from file or call
+    
+
+3. PlotLayerMap.py
+
+    Notes:
+        Generates maps with zones and roads, either can be activaded and deactivades changing truth value of zones and roads respectively.
+
+    Requires:
+        -zone_*.gpkg
+        -cut_roads_*.gpkg
+        -safe_roads_*.gpkg
+
+    Pending improvements:
+        - Get scenarios from file or call
+        - incorporate points such as municipality centers and special interest points
+
+4. PlotRiskMap.py
+
+    Notes: 
+        Generates a map with the municipal risk for each municipality.
+
+    Requires
+        -
+
+5. PlotLayerMapI.py
+    Pending
+6. PlotRiskMapI.py
+    Pending
