@@ -12,7 +12,8 @@ If any of the generated files already exist they will just be uploaded not creat
 
     Requires:
         source_files:
-            - "puntos riesgo ambientales"
+            - BTN_POI_Servicios_Instalaciones_gpkg
+            - affected_municipalities_dictionary.json
         processed_files:
 
     Generates
@@ -20,13 +21,9 @@ If any of the generated files already exist they will just be uploaded not creat
             - affected_area.gpkg: area of affected municipalities
             - neighbors_1_area.gpkg: idem including first neighbors
             - neighbors_2_area.gpkg: idem including second neighbors
-            - points_in_polygon.gpkg: all points of interest in the area including type, subtype and geometry
-            - G_affected.graphml: Road graph including node for municipality, type and subtype of interest points of the affected area
-            - G_1st.graphml: idem including first neighbors
-            - G_2nd.graphml: idem including second neighbors
+            - G_2nd.graphml: road graph including second neighbors with municipality center and services locations
 
     Pending improvements:
-        - Include new interest points input data.
         - Comment.
         - Pass regions from file/call, tricky as sometimes the affected area may include different regions and names have to be checked.
 
@@ -63,46 +60,60 @@ If any of the generated files already exist they will just be uploaded not creat
     Pending improvements:
         - Revise and Comment.
         - Add import layers input and output file names from file.
-        - Check for further separation, potentially: zones+depth, roads, shortest_paths
+        - Check for further separation, potentially: zones+depth, roads
 
 3. NavigabilityAnalysis.py
 
     Notes:
-        Computes effect on global risk of removing/adding edges
+        Computes shortest paths between municipalities in different scenarios
 
     Requires:
         processed_files:
             - G_2nd.graphml
-            - cut_roads_flood_risk_10.graphml
-            - cut_roads_flood_risk_100.graphml
-            - cut_roads_flood_risk_500.graphml
-            - cut_roads_DANA_31_10_2024.graphml
-            - cut_roads_DANA_03_11_2024.graphml
-            - cut_roads_DANA_05_11_2024.graphml
-            - cut_roads_DANA_06_11_2024.graphml
-            - cut_roads_DANA_08_11_2024.graphml
-            - safe_roads_flood_risk_10.graphml
-            - safe_roads_flood_risk_100.graphml
-            - safe_roads_flood_risk_500.graphml
-            - safe_roads_DANA_31_10_2024.graphml
-            - safe_roads_DANA_03_11_2024.graphml
-            - safe_roads_DANA_05_11_2024.graphml
-            - safe_roads_DANA_06_11_2024.graphml
-            - safe_roads_DANA_08_11_2024.graphml
+            - safe_roads_*.graphml
 
-    Generates
+    Generates:
         processed_files:
-            - edge_risks_NP.json: effect on global risk of removing each edge from the non perturbed network
-            - edge_risks_DANA.json: effect on global risk of recovering each edge at the peak of the DANA flood
-            - R_G.json: global risk values for different scenarios
+            - shortest_paths_*.json shortest path between municipalities
 
     Pending improvements:
         - Revise and Comment.
         - Add import layers input and output file names from file.
 
 4. ServicesAcces.py
+
+    Notes:
+    This codes generates files with the shortest paths between municipalities and different types of services.
+
+    Reguires:
+        processed_files:
+            -G_2nd.graphml
+            -safe_roads_*.graphml
+
+    Generates:
+        processed_files:
+            - municipality_clase_shortest_path*.json
+
     Pending improvements:
-        - Revise after StreetData.py includes all interest points
+        - Revise and Comment.
+        - Add import layers input and output file names from file.
+
+5 Risks: 
+    Notes:
+    Computes global risk for all scenarios as well as risk delta of adding/removing edges
+    Very slow, takes hours.
+
+    Requires:
+        processed_files:
+            - G_2nd.graphml
+            - cut_roads_*.gpkg
+            - safe_roads_*.graphml
+
+    Generates:
+        processed_files:
+            - edge_risks_NP.json: effect on global risk of removing each edge from the non perturbed network
+            - edge_risks_DANA.json: effect on global risk of recovering each edge at the peak of the DANA flood
+            - R_G.json: global risk values for different scenarios
     
 Plots
 
