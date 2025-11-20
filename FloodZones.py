@@ -8,8 +8,11 @@ from shapely.geometry import Polygon, MultiPolygon
 # Configuration
 # ============================================================
 
-input_dir = "source_files"
-output_dir = "processed_files"
+# Use script directory as origin
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+input_dir = os.path.join(BASE_DIR, "source_files")
+output_dir = os.path.join(BASE_DIR, "processed_files")
+os.makedirs(output_dir, exist_ok=True)
 
 ox.settings.use_cache = True
 ox.settings.log_console = True
@@ -81,17 +84,24 @@ def tag_flooded_roads(edges, nodes, flood_zones, name):
       - flooded (cut) edges (.gpkg + .graphml)
       - safe edges (.gpkg + .graphml)
     """
-    # --- Define output paths ---
-    tagged_path = f"{output_dir}/tagged_roads_{name}.gpkg"
-    cut_gpkg_path = f"{output_dir}/cut_roads_{name}.gpkg"
-    safe_gpkg_path = f"{output_dir}/safe_roads_{name}.gpkg"
-    cut_graphml_path = f"{output_dir}/cut_roads_{name}.graphml"
-    safe_graphml_path = f"{output_dir}/safe_roads_{name}.graphml"
+
+    tagged_path = os.path.join(output_dir, f"tagged_roads_{name}.gpkg")
+    cut_gpkg_path = os.path.join(output_dir, f"cut_roads_{name}.gpkg")
+    safe_gpkg_path = os.path.join(output_dir, f"safe_roads_{name}.gpkg")
+    cut_graphml_path = os.path.join(output_dir, f"cut_roads_{name}.graphml")
+    safe_graphml_path = os.path.join(output_dir, f"safe_roads_{name}.graphml")
 
     # --- Step 1: Tag flooded edges ---
     if os.path.exists(tagged_path):
         print(f"Loading tagged edges for {name} from {tagged_path}")
         edges = gpd.read_file(tagged_path)
+
+        # ---- Restore MultiIndex ----
+        if not isinstance(edges.index, pd.MultiIndex):
+            if "u" in edges.columns and "v" in edges.columns:
+                if "key" not in edges.columns:
+                    edges["key"] = 0
+                edges.set_index(["u", "v", "key"], inplace=True)
     else:
         print(f"Tagging flooded edges for {name}")
         bounds = edges.total_bounds
@@ -103,24 +113,55 @@ def tag_flooded_roads(edges, nodes, flood_zones, name):
             lambda geom: flood_geoms.intersects(geom).any()
         )
 
+        # Save tagged edges
         edges.to_file(tagged_path, layer=name, driver="GPKG")
         print(f"Saved tagged edges to {tagged_path}")
 
-    # --- Step 2: Split safe vs flooded ---
+        # Restore MultiIndex
+        if not isinstance(edges.index, pd.MultiIndex):
+            if "u" in edges.columns and "v" in edges.columns:
+                if "key" not in edges.columns:
+                    edges["key"] = 0
+                edges.set_index(["u", "v", "key"], inplace=True)
+
+    # --- Safe vs Flooded ---
     safe_edges = edges[~edges["in_flood_zone"]].copy()
     cut_edges = edges[edges["in_flood_zone"]].copy()
 
-    # --- Step 3: Save both as GPKG ---
+    # Restore MultiIndex for safe_edges
+    if not isinstance(safe_edges.index, pd.MultiIndex):
+        if "u" in safe_edges.columns and "v" in safe_edges.columns:
+            if "key" not in safe_edges.columns:
+                safe_edges["key"] = 0
+            safe_edges.set_index(["u", "v", "key"], inplace=True)
+
+    # Restore MultiIndex for cut_edges
+    if not isinstance(cut_edges.index, pd.MultiIndex):
+        if "u" in cut_edges.columns and "v" in cut_edges.columns:
+            if "key" not in cut_edges.columns:
+                cut_edges["key"] = 0
+            cut_edges.set_index(["u", "v", "key"], inplace=True)
+
+    # --- Save GeoPackages ---
     safe_edges.to_file(safe_gpkg_path, layer=name, driver="GPKG")
     cut_edges.to_file(cut_gpkg_path, layer=name, driver="GPKG")
-    print(f"Saved safe/cut edges to GeoPackages")
+    print("Saved safe/cut edges to GPKG")
 
-    # --- Step 4: Build and save GraphMLs ---
+    # ============================================================
+    # Preserve municipality and clase ATTRIBUTES
+    # ============================================================
+    nodes = nodes.copy()
+    nodes["municipality"] = [G_2nd.nodes[n].get("municipality", None) for n in nodes.index]
+    nodes["clase"] = [G_2nd.nodes[n].get("clase", None) for n in nodes.index]
+
+    # --- Build graphs WITH ATTRIBUTES PRESERVED ---
     G_safe = ox.graph_from_gdfs(nodes, safe_edges)
     G_cut = ox.graph_from_gdfs(nodes, cut_edges)
-    ox.save_graphml(G_safe, filepath=safe_graphml_path)
-    ox.save_graphml(G_cut, filepath=cut_graphml_path)
-    print(f"Saved safe/cut roads as GraphML")
+
+    # --- Save GraphMLs ---
+    ox.save_graphml(G_safe, safe_graphml_path)
+    ox.save_graphml(G_cut, cut_graphml_path)
+    print("Saved safe/cut roads GraphML WITH municipality + clase attributes")
 
     return edges, G_safe, G_cut
 
@@ -144,41 +185,41 @@ nodes, edges = ox.graph_to_gdfs(G_2nd)
 # ============================================================
 
 zone_input_files = {
-    "10 yr": f"{input_dir}/laminaspb-q10/Q10_2Ciclo_PB_20241121.shp",
-    "100 yr": f"{input_dir}/laminaspb-q100/Q100_2Ciclo_PB_20241121_ETRS89.shp",
-    "500 yr": f"{input_dir}/laminaspb-q500/Q500_2Ciclo_PB_20241121_ETRS89.shp",
-    "DANA_31_10_2024": f"{input_dir}/EMSR773_AOI01_DEL_PRODUCT_v1/EMSR773_AOI01_DEL_PRODUCT_observedEventA_v1.shp",
-    "DANA_03_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT01_v1/EMSR773_AOI01_DEL_MONIT01_observedEventA_v1.shp",
-    "DANA_05_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT02_v1/EMSR773_AOI01_DEL_MONIT02_observedEventA_v1.shp",
-    "DANA_06_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT03_v1/EMSR773_AOI01_DEL_MONIT03_observedEventA_v1.shp",
-    "DANA_08_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT04_v1/EMSR773_AOI01_DEL_MONIT04_observedEventA_v1.shp"
+    "10 yr": os.path.join(input_dir, "laminaspb-q10/Q10_2Ciclo_PB_20241121.shp"),
+    "100 yr": os.path.join(input_dir, "laminaspb-q100/Q100_2Ciclo_PB_20241121_ETRS89.shp"),
+    "500 yr": os.path.join(input_dir, "laminaspb-q500/Q500_2Ciclo_PB_20241121_ETRS89.shp"),
+    "DANA_31_10_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_PRODUCT_v1/EMSR773_AOI01_DEL_PRODUCT_observedEventA_v1.shp"),
+    "DANA_03_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT01_v1/EMSR773_AOI01_DEL_MONIT01_observedEventA_v1.shp"),
+    "DANA_05_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT02_v1/EMSR773_AOI01_DEL_MONIT02_observedEventA_v1.shp"),
+    "DANA_06_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT03_v1/EMSR773_AOI01_DEL_MONIT03_observedEventA_v1.shp"),
+    "DANA_08_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT04_v1/EMSR773_AOI01_DEL_MONIT04_observedEventA_v1.shp")
 }
 
 zone_output_files = {
-    "10 yr": f"{output_dir}/zone_flood_risk_10.gpkg",
-    "100 yr": f"{output_dir}/zone_flood_risk_100.gpkg",
-    "500 yr": f"{output_dir}/zone_flood_risk_500.gpkg",
-    "DANA_31_10_2024": f"{output_dir}/zone_DANA_31_10_2024.gpkg",
-    "DANA_03_11_2024": f"{output_dir}/zone_DANA_03_11_2024.gpkg",
-    "DANA_05_11_2024": f"{output_dir}/zone_DANA_05_11_2024.gpkg",
-    "DANA_06_11_2024": f"{output_dir}/zone_DANA_06_11_2024.gpkg",
-    "DANA_08_11_2024": f"{output_dir}/zone_DANA_08_11_2024.gpkg"
+    "10 yr": os.path.join(output_dir, "zone_flood_risk_10.gpkg"),
+    "100 yr": os.path.join(output_dir, "zone_flood_risk_100.gpkg"),
+    "500 yr": os.path.join(output_dir, "zone_flood_risk_500.gpkg"),
+    "DANA_31_10_2024": os.path.join(output_dir, "zone_DANA_31_10_2024.gpkg"),
+    "DANA_03_11_2024": os.path.join(output_dir, "zone_DANA_03_11_2024.gpkg"),
+    "DANA_05_11_2024": os.path.join(output_dir, "zone_DANA_05_11_2024.gpkg"),
+    "DANA_06_11_2024": os.path.join(output_dir, "zone_DANA_06_11_2024.gpkg"),
+    "DANA_08_11_2024": os.path.join(output_dir, "zone_DANA_08_11_2024.gpkg")
 }
 
 depth_input_files = {
-    "DANA_31_10_2024": f"{input_dir}/EMSR773_AOI01_DEL_PRODUCT_v1/EMSR773_AOI01_DEL_PRODUCT_floodDepthA_v1.shp",
-    "DANA_03_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT01_v1/EMSR773_AOI01_DEL_MONIT01_floodDepthA_v1.shp",
-    "DANA_05_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT02_v1/EMSR773_AOI01_DEL_MONIT02_floodDepthA_v1.shp",
-    "DANA_06_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT03_v1/EMSR773_AOI01_DEL_MONIT03_floodDepthA_v1.shp",
-    "DANA_08_11_2024": f"{input_dir}/EMSR773_AOI01_DEL_MONIT04_v1/EMSR773_AOI01_DEL_MONIT04_floodDepthA_v1.shp"
+    "DANA_31_10_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_PRODUCT_v1/EMSR773_AOI01_DEL_PRODUCT_floodDepthA_v1.shp"),
+    "DANA_03_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT01_v1/EMSR773_AOI01_DEL_MONIT01_floodDepthA_v1.shp"),
+    "DANA_05_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT02_v1/EMSR773_AOI01_DEL_MONIT02_floodDepthA_v1.shp"),
+    "DANA_06_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT03_v1/EMSR773_AOI01_DEL_MONIT03_floodDepthA_v1.shp"),
+    "DANA_08_11_2024": os.path.join(input_dir, "EMSR773_AOI01_DEL_MONIT04_v1/EMSR773_AOI01_DEL_MONIT04_floodDepthA_v1.shp")
 }
 
 depth_output_files = {
-    "DANA_31_10_2024": f"{output_dir}/depth_DANA_31_10_2024.gpkg",
-    "DANA_03_11_2024": f"{output_dir}/depth_DANA_03_11_2024.gpkg",
-    "DANA_05_11_2024": f"{output_dir}/depth_DANA_05_11_2024.gpkg",
-    "DANA_06_11_2024": f"{output_dir}/depth_DANA_06_11_2024.gpkg",
-    "DANA_08_11_2024": f"{output_dir}/depth_DANA_08_11_2024.gpkg"
+    "DANA_31_10_2024": os.path.join(output_dir, "depth_DANA_31_10_2024.gpkg"),
+    "DANA_03_11_2024": os.path.join(output_dir, "depth_DANA_03_11_2024.gpkg"),
+    "DANA_05_11_2024": os.path.join(output_dir, "depth_DANA_05_11_2024.gpkg"),
+    "DANA_06_11_2024": os.path.join(output_dir, "depth_DANA_06_11_2024.gpkg"),
+    "DANA_08_11_2024": os.path.join(output_dir, "depth_DANA_08_11_2024.gpkg")
 }
 
 # ============================================================

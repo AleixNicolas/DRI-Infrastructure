@@ -12,22 +12,59 @@ import osmnx as ox
 
 # -------------------- Helper Functions --------------------
 def compute_individual_risk_factor(T_P, T_NP):
-    """Compute risk factor for a single path."""
+    """
+    Compute risk factor for a single path.
+    Handles missing values (None) safely.
+    """
+
+    # No travel possible under perturbed conditions → maximum risk
+    if T_P is None:
+        return 1
+
+    # No baseline travel time (not connected normally) → no risk
+    if T_NP is None:
+        return 0
+
+    # Avoid division by zero
     if T_P == 0:
         return 1
+
     return 1 - (T_NP / T_P)
+
 
 def compute_municipal_risk_factor(T_P_dict, T_NP_dict, municipality):
     """Compute average risk factor for a municipality."""
     keys = {k for k in T_P_dict.keys() & T_NP_dict.keys() if municipality in k}
-    R = sum(compute_individual_risk_factor(T_P_dict[k][1], T_NP_dict[k][1]) for k in keys)
-    return R / len(keys) if keys else 0
+
+    if not keys:
+        return 0
+
+    R = 0
+    for k in keys:
+        _, T_P = T_P_dict[k]
+        _, T_NP = T_NP_dict[k]
+        R += compute_individual_risk_factor(T_P, T_NP)
+
+    return R / len(keys)
+
 
 def load_shortest_paths(filename):
-    """Load shortest paths JSON into dictionary."""
+    """
+    Load shortest paths JSON into dictionary.
+    Returns: key → (path_list, time_value)
+    Handles {"path": [...], "time": ...} structure.
+    """
     with open(filename, 'r') as f:
         data = json.load(f)
-    return {k: (v[0], v[1]) for k, v in data.items()}
+
+    cleaned = {}
+    for k, v in data.items():
+        path = v.get("path", [])
+        time = v.get("time", None)
+        cleaned[k] = (path, time)
+
+    return cleaned
+
 
 # -------------------- Paths & Data --------------------
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -44,10 +81,10 @@ polygons = affected_area.to_crs(epsg=3857)
 FILE_GRAPH = os.path.join(output_dir, "G_2nd.graphml")
 G_2nd = ox.load_graphml(FILE_GRAPH)
 
-# Load shortest paths
-T_NP_dictionary = load_shortest_paths(os.path.join(output_dir, "shorthest_paths_NP.json"))
+# Load shortest paths (correctly parsed)
+T_NP_dictionary = load_shortest_paths(os.path.join(output_dir, "shortest_paths_NP.json"))
 T_P_dictionaries = {
-    "DANA_31_10_2024": load_shortest_paths(os.path.join(output_dir, "shorthest_paths_DANA_31_10_2024.json"))
+    "DANA_31_10_2024": load_shortest_paths(os.path.join(output_dir, "shortest_paths_DANA_31_10_2024.json"))
 }
 
 # Name corrections for matching
